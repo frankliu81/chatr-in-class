@@ -1,17 +1,28 @@
 class MessagesController < ApplicationController
 
   def index
-    render json: Message.all
+    render json: Message.all.order("created_at asc")
   end
 
   def create
-    Message.create!(body: params[:body])
-    head :created
+    #byebug
+    m = Message.create!(body: params[:body], full_name: params[:full_name])
+    #head :created
+    render json: {id: m.id}
   end
 
   def destroy
     Message.find(params[:id]).destroy!
     head :ok
+  end
+
+  def update_flag
+    #puts ">>>>>>>>>>>>>>>>inside update_flag"
+    m = Message.find(params[:message_id])
+    m.update!(flag: !m.flag)
+    #byebug;
+    #head :ok
+    render json: {flag: m.flag}
   end
 
 end
